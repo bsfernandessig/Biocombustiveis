@@ -332,6 +332,7 @@ co2_geral <- tabelas %>%
 # Localização das usinas de biocombustíveis
 
 *Números no Brasil:*
+
 - 543 usinas de biogás
 
 - 64 usinas de biodiesel
@@ -549,10 +550,10 @@ kbl(usinas_biogas_sumario,
 
 ## Indicadores considerados
 
-### *Ambientais - Balanço de carbono*
-- Balanço das emissões totais de CO2 (2018)
-- Balanço das emissões relacionadas ao plantio de soja (2018)
-- Balanço das emissões relacionadas ao plantio de cana (2018)
+### *Ambientais - Emissões líquidas de carbono*
+- Emissões líquidas totais de CO2 (2018)
+- Emissões líquidas relacionadas ao plantio de soja (2018)
+- Emissões líquidas relacionadas ao plantio de cana (2018)
 
 ```{r co2, out.width='100%'}
 IMG_CO2 <- include_graphics("D:/Freelas/CEBRAP/Biocombustiveis/images/CO2_v2.png")
@@ -1094,13 +1095,13 @@ leaflet(tabelas_COMP_BiodieselEtanol) %>%
               opacity = 1,
               color = ~factpal(CO2_soma2018_comparacao_cat),
               fillOpacity = 0.6,
-              group = "Balanço de CO2 total (2017)") %>%
+              group = "Emissões líquidas de CO2 total (2017)") %>%
     addLegend(pal = colorFactor(palette = c("#4d9221", "#b2182b"), 
                               tabelas_COMP_BiodieselEtanol$CO2_soma2018_comparacao_cat) , 
             values = ~CO2_soma2018_comparacao_cat,
-            title = "Balanço de CO2 total (2017)",
+            title = "Emissões líquidas de CO2 total (2017)",
             opacity = 1,
-            group = "Balanço de CO2 total (2017)", position = "bottomright"
+            group = "Emissões líquidas de CO2 total (2017)", position = "bottomright"
             ) %>%
   
 # MUNICIPIOS - CO2 DA SOJA 2017 ####
@@ -1109,13 +1110,13 @@ leaflet(tabelas_COMP_BiodieselEtanol) %>%
               opacity = 1,
               color = ~factpal(CO2_soja2018_comparacao_cat),
               fillOpacity = 0.6,
-              group = "Balanço de CO2 da soja (2017)") %>%
+              group = "Emissões líquidas de CO2 da soja (2017)") %>%
     addLegend(pal = colorFactor(palette = c("#4d9221", "#b2182b"), 
                               tabelas_COMP_BiodieselEtanol$CO2_soja2018_comparacao_cat) , 
             values = ~CO2_soja2018_comparacao_cat,
-            title = "Balanço de CO2 da soja (2017)",
+            title = "Emissões líquidas de CO2 da soja (2017)",
             opacity = 1,
-            group = "Balanço de CO2 da soja (2017)", position = "bottomright"
+            group = "Emissões líquidas de CO2 da soja (2017)", position = "bottomright"
             ) %>%
   
 # MUNICIPIOS - CO2 DA CANA 2017 ####
@@ -1124,13 +1125,13 @@ leaflet(tabelas_COMP_BiodieselEtanol) %>%
               opacity = 1,
               color = ~factpal(CO2_cana2018_comparacao_cat),
               fillOpacity = 0.6,
-              group = "Balanço de CO2 da cana (2017)") %>%
+              group = "Emissões líquidas de CO2 da cana (2017)") %>%
     addLegend(pal = colorFactor(palette = c("#4d9221", "#b2182b"), 
                               tabelas_COMP_BiodieselEtanol$CO2_cana2018_comparacao_cat) , 
             values = ~CO2_cana2018_comparacao_cat,
-            title = "Balanço de CO2 da cana (2017)",
+            title = "Emissões líquidas de CO2 da cana (2017)",
             opacity = 1,
-            group = "Balanço de CO2 da cana (2017)", position = "bottomright"
+            group = "Emissões líquidas de CO2 da cana (2017)", position = "bottomright"
             ) %>%
 
 # MUNICIPIOS - OCUPADOS NOS ESTABELECIMENTOS 2017 #### 
@@ -1223,11 +1224,6 @@ leaflet(tabelas_COMP_BiodieselEtanol) %>%
             group = "% ocupados na soja da AF (2017)", position = "bottomright"
             ) %>%
   
-  
-  
-  
-  
-  
 #LOCALIZACAO USINAS DE BIODIESEL ####
   addCircleMarkers(data = usinas_biodiesel, 
              stroke = T,
@@ -1264,7 +1260,7 @@ leaflet(tabelas_COMP_BiodieselEtanol) %>%
   addLayersControl(
     overlayGroups = c("Usinas de biodiesel", "Usinas de etanol", 
                       "Gini (2010)","PIB (2018)","Tx. de desemprego (2010)","% de pessoas pobres (2017)", 
-                      "Balanço de CO2 total (2017)", "Balanço de CO2 da soja (2017)", "Balanço de CO2 da cana (2017)",
+                      "Emissões líquidas de CO2 total (2017)", "Emissões líquidas de CO2 da soja (2017)", "Emissões líquidas de CO2 da cana (2017)",
                       
                       "Ocupados em estab. agropec. (2017)", "% ocupados da AF em estab. agropec. (2017)",
                       
@@ -1275,7 +1271,8 @@ leaflet(tabelas_COMP_BiodieselEtanol) %>%
     options = layersControlOptions(collapsed = FALSE, autoZIndex = FALSE)
   ) %>%
   
-  hideGroup(c("Gini (2010)","PIB (2018)","Tx. de desemprego (2010)","% de pessoas pobres (2017)", "Balanço de CO2 total (2017)", "Balanço de CO2 da soja (2017)", "Balanço de CO2 da cana (2017)",
+  hideGroup(c("Gini (2010)","PIB (2018)","Tx. de desemprego (2010)","% de pessoas pobres (2017)", 
+              "Emissões líquidas de CO2 total (2017)", "Emissões líquidas de CO2 da soja (2017)", "Emissões líquidas de CO2 da cana (2017)",
               "Ocupados em estab. agropec. (2017)", "% ocupados da AF em estab. agropec. (2017)",
               "Ocupados na cana-de-açúcar (2017)", "% ocupados na cana-de-açúcar da AF (2017)",
               "Ocupados na soja (2017)", "% ocupados na soja da AF (2017)"))
@@ -1283,11 +1280,7 @@ leaflet(tabelas_COMP_BiodieselEtanol) %>%
   
 ```
 
-
-# Tipologia a partir do acumulo de variáveis
-
-Para a delimitação inicial de uma tipologia, um valor de 0 a 7 foi atribuído a cada município com usinas de etanol e/ou biodiesel, sendo esse valor relativo ao acumulo de indicadores melhores do que a média do estado. Um valor de 0 significa que nenhum indicador naquele município é melhor que a média estadual, enquanto que um valor de 7 indica que todos os indicadores são melhores que a média estadual.
-
+## Resumo por indicador e estado
 
 ```{r definindo_grupos, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -1344,49 +1337,276 @@ tabelas_COMP_BiodieselEtanol_GRUPOS %>%
 
 ```
 
+```{r tabelaresumo2_estado, echo=FALSE, message=FALSE, warning=FALSE}
+########  GINI ###########
+
+x_GINI_2010_count <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
+  select(SIGLA_UF.x, 
+         GINI_2010_comparacao
+         ) %>%
+  
+  group_by(SIGLA_UF.x, 
+           GINI_2010_comparacao
+           ) %>%
+  
+  summarise(GINI_2010_count = n()
+            ) %>%
+    
+  mutate(pct_GINI_2010_count = GINI_2010_count/sum(GINI_2010_count),
+         pct_GINI_2010_count = scales::percent(round(pct_GINI_2010_count, 2), big.mark = ".",  decimal.mark = "," , na.rm = TRUE)
+         )
+
+######## PIB  ###########
+
+x_PIB_2018_count <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
+  select(SIGLA_UF.x, 
+         PIB_2018_comparacao
+         ) %>%
+  
+  group_by(SIGLA_UF.x, 
+           PIB_2018_comparacao
+           ) %>%
+  
+  summarise(PIB_2018_count = n()
+            ) %>%
+    
+  mutate(pct_PIB_2018_count = PIB_2018_count/sum(PIB_2018_count),
+         pct_PIB_2018_count = scales::percent(round(pct_PIB_2018_count, 2), big.mark = ".",  decimal.mark = "," , na.rm = TRUE)
+         )
+
+######## PESSOAS POBRES  ###########
+
+x_ppespobr_2017_count <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
+  select(SIGLA_UF.x, 
+          ppespobr_2017_comparacao
+         ) %>%
+  
+  group_by(SIGLA_UF.x, 
+            ppespobr_2017_comparacao
+           ) %>%
+  
+  summarise(ppespobr_2017_count = n()
+            ) %>%
+    
+  mutate(pct_ppespobr_2017_count = ppespobr_2017_count/sum(ppespobr_2017_count),
+         pct_ppespobr_2017_count = scales::percent(round(pct_ppespobr_2017_count, 2), big.mark = ".",  decimal.mark = "," , na.rm = TRUE)
+         )
+
+######## DESEMPREGO  ###########
+x_TxDesemprego_2010_count <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
+  select(SIGLA_UF.x, 
+         TxDesemprego_2010_comparacao
+         ) %>%
+  
+  group_by(SIGLA_UF.x, 
+           TxDesemprego_2010_comparacao
+           ) %>%
+  
+  summarise(TxDesemprego_2010_count = n()
+            ) %>%
+    
+  mutate(pct_TxDesemprego_2010_count = TxDesemprego_2010_count/sum(TxDesemprego_2010_count),
+         pct_TxDesemprego_2010_count = scales::percent(round(pct_TxDesemprego_2010_count, 2), big.mark = ".",  decimal.mark = "," , na.rm = TRUE)
+         )
+
+
+######## CO2 SOMA  ###########
+x_CO2_soma2018_count <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
+  select(SIGLA_UF.x, 
+         CO2_soma2018_comparacao
+         ) %>%
+  
+  group_by(SIGLA_UF.x, 
+           CO2_soma2018_comparacao
+           ) %>%
+  
+  summarise(CO2_soma2018_count = n()
+            ) %>%
+    
+  mutate(pct_CO2_soma2018_count = CO2_soma2018_count/sum(CO2_soma2018_count),
+         pct_CO2_soma2018_count = scales::percent(round(pct_CO2_soma2018_count, 2), big.mark = ".",  decimal.mark = "," , na.rm = TRUE)
+         )
+
+######## OCUPADOS GERAL  ###########
+x_Ogeral_T_count <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
+  select(SIGLA_UF.x, 
+         Ogeral_T_comparacao
+         ) %>%
+  
+  group_by(SIGLA_UF.x, 
+           Ogeral_T_comparacao
+           ) %>%
+  
+  summarise(Ogeral_T_count = n()
+            ) %>%
+    
+  mutate(pct_Ogeral_T_count = Ogeral_T_count/sum(Ogeral_T_count),
+         pct_Ogeral_T_count = scales::percent(round(pct_Ogeral_T_count, 2), big.mark = ".",  decimal.mark = "," , na.rm = TRUE)
+         )
+
+######## OCUPADOS AF PCT  ###########
+
+x_Ogeral_AF_pct_count <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
+  select(SIGLA_UF.x, 
+         Ogeral_AF_pct_comparacao
+         ) %>%
+  
+  group_by(SIGLA_UF.x, 
+           Ogeral_AF_pct_comparacao
+           ) %>%
+  
+  summarise(Ogeral_AF_pct_count = n()
+            ) %>%
+    
+  mutate(pct_Ogeral_AF_pct_count = Ogeral_AF_pct_count/sum(Ogeral_AF_pct_count),
+         pct_Ogeral_AF_pct_count = scales::percent(round(pct_Ogeral_AF_pct_count, 2), big.mark = ".",  decimal.mark = "," , na.rm = TRUE)
+         )
+
+########   ###########
+
+estados_siglas <- read_excel("data/tabelas/criadas/estados_siglas.xlsx")
+
+tabelas_countsSUMARIO <- estados_siglas %>%
+  left_join(., x_GINI_2010_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "GINI_2010_comparacao")) %>%
+  left_join(., x_ppespobr_2017_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "ppespobr_2017_comparacao")) %>%
+  left_join(., x_TxDesemprego_2010_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "TxDesemprego_2010_comparacao")) %>%
+  left_join(., x_CO2_soma2018_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "CO2_soma2018_comparacao")) %>%
+  left_join(., x_Ogeral_T_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "Ogeral_T_comparacao")) %>%
+  left_join(., x_Ogeral_AF_pct_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "Ogeral_AF_pct_comparacao")) %>%
+  
+  pivot_wider(names_from = melhorpior, 
+              values_from = c("GINI_2010_count", 
+                              "pct_GINI_2010_count" ,
+                              "ppespobr_2017_count" ,
+                              "pct_ppespobr_2017_count" ,
+                              "TxDesemprego_2010_count",
+                              "pct_TxDesemprego_2010_count",
+                              "CO2_soma2018_count" ,
+                              "pct_CO2_soma2018_count" ,
+                              "Ogeral_T_count" ,
+                              "pct_Ogeral_T_count" ,
+                              "Ogeral_AF_pct_count",
+                              "pct_Ogeral_AF_pct_count")) %>%
+  arrange(regiao, SIGLA_UF) %>%
+  select("regiao",                        
+          "SIGLA_UF",    
+          
+          "GINI_2010_count_1",
+          "pct_GINI_2010_count_1",
+          
+          "GINI_2010_count_0",   
+          "pct_GINI_2010_count_0",
+          
+          "ppespobr_2017_count_1",
+          "pct_ppespobr_2017_count_1",
+          
+          "ppespobr_2017_count_0",
+          "pct_ppespobr_2017_count_0" ,
+          
+          "TxDesemprego_2010_count_1",  
+          "pct_TxDesemprego_2010_count_1",
+          
+          "TxDesemprego_2010_count_0", 
+          "pct_TxDesemprego_2010_count_0",
+          
+          "CO2_soma2018_count_1",         
+          "pct_CO2_soma2018_count_1"    ,
+          
+          "CO2_soma2018_count_0",      
+          "pct_CO2_soma2018_count_0",  
+          
+          "Ogeral_T_count_1",             
+          "pct_Ogeral_T_count_1",      
+          
+          "Ogeral_T_count_0",             
+          "pct_Ogeral_T_count_0",         
+          
+          "Ogeral_AF_pct_count_1",        
+          "pct_Ogeral_AF_pct_count_1",    
+          
+          "Ogeral_AF_pct_count_0",        
+          "pct_Ogeral_AF_pct_count_0"
+         ) %>%
+  group_by(regiao, SIGLA_UF) %>%
+  mutate(GINI_2010_count_1 = paste0(pct_GINI_2010_count_1, " (", GINI_2010_count_1, ")"), 
+         GINI_2010_count_0 = paste0(pct_GINI_2010_count_0, " (", GINI_2010_count_0, ")"),
+         
+         ppespobr_2017_count_1 = paste0(pct_ppespobr_2017_count_1, " (", ppespobr_2017_count_1, ")"), 
+         ppespobr_2017_count_0 = paste0(pct_ppespobr_2017_count_0, " (", ppespobr_2017_count_0, ")"),
+         
+         TxDesemprego_2010_count_1 = paste0(pct_TxDesemprego_2010_count_1, " (", TxDesemprego_2010_count_1, ")"), 
+         TxDesemprego_2010_count_0 = paste0(pct_TxDesemprego_2010_count_0, " (", TxDesemprego_2010_count_0, ")"),
+         
+         CO2_soma2018_count_1 = paste0(pct_CO2_soma2018_count_1, " (", CO2_soma2018_count_1, ")"), 
+         CO2_soma2018_count_0 = paste0(pct_CO2_soma2018_count_0, " (", CO2_soma2018_count_0, ")"),
+         
+         Ogeral_T_count_1 = paste0(pct_Ogeral_T_count_1, " (", Ogeral_T_count_1, ")"), 
+         Ogeral_T_count_0 = paste0(pct_Ogeral_T_count_0, " (", Ogeral_T_count_0, ")"),
+         
+         Ogeral_AF_pct_count_1 = paste0(pct_Ogeral_AF_pct_count_1, " (", Ogeral_AF_pct_count_1, ")"), 
+         Ogeral_AF_pct_count_0 = paste0(pct_Ogeral_AF_pct_count_0, " (", Ogeral_AF_pct_count_0, ")"),
+         
+         .keep = c("none")
+         ) %>%
+  mutate_all(funs(str_replace(., "NA", NA_character_))
+             )
+
+
+options(knitr.kable.NA = '*')
+
+kbl(tabelas_countsSUMARIO,
+    col.names = c("Região",
+                  "Estado",
+                  "Acima da média",
+                  "Abaixo da média",
+                  "Acima da média",
+                  "Abaixo da média",
+                  "Acima da média",
+                  "Abaixo da média",
+                  "Acima da média",
+                  "Abaixo da média",
+                  "Acima da média",
+                  "Abaixo da média",
+                  "Acima da média",
+                  "Abaixo da média"
+                  ),
+    align = "ccrlrlrlrlrlrlrlrlrl",
+    caption = "Resumo por estado (comparativo dos valores municipais com a média estadual)") %>%
+  #kable_classic() %>%
+#  kable_minimal() %>%
+  #kable_material(c("striped", "hover")) 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  add_header_above(c(" " = 2, 
+                     "Índice de Gini" = 2, 
+                     "% de pessoas pobres" = 2, 
+                     "Taxa de desemprego" = 2, 
+                     "Emissões líquidas de CO2" = 2, 
+                     "Ocupados na soja" = 2, 
+                     "% de ocupados na soja da AF" = 2)) %>%
+  #add_header_above(c(" " = 2, "% de soja na AMC acima da média" = 6, "% de soja na AMC abaixo da média" = 6)) %>%
+  collapse_rows(columns = 1, valign = "middle") 
+
+```
+
+
+# Tipologia a partir do acumulo de indicadores
+
+Para a delimitação inicial de uma tipologia, um valor de 0 a 7 foi atribuído a cada município com usinas de etanol e/ou biodiesel, sendo esse valor relativo ao acumulo de indicadores melhores do que a média do estado. Um valor de 0 significa que nenhum indicador naquele município é melhor que a média estadual, enquanto que um valor de 7 indica que todos os indicadores são melhores que a média estadual.
 
 
 ## Tabela resumo por estado
 
-```{r tabelaresumo_estado, echo=FALSE, message=FALSE, warning=FALSE}
+### Resumo a partir da soma de indicadores
 
+
+```{r tabelaresumo_estado, echo=FALSE, message=FALSE, warning=FALSE}
 tabelas_COMP_BiodieselEtanol_SUMARIO <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
   select(SIGLA_UF.x, soma_indsociais) %>%
   group_by(SIGLA_UF.x, soma_indsociais) %>%
   summarise(n = n()) %>%
   mutate(pct = n/sum(n)) %>%
   mutate(pct = scales::percent(round(pct, 2), big.mark = ".",  decimal.mark = "," , na.rm = TRUE),
-         regiao = case_when(SIGLA_UF.x == "AC" ~ "Norte",
-                            SIGLA_UF.x == "AP" ~ "Norte",
-                            SIGLA_UF.x == "AM" ~ "Norte",
-                            SIGLA_UF.x == "PA" ~ "Norte",
-                            SIGLA_UF.x == "RO" ~ "Norte",
-                            SIGLA_UF.x == "RR" ~ "Norte",
-                            SIGLA_UF.x == "TO" ~ "Norte",
-
-                            SIGLA_UF.x == "AL" ~ "Nordeste",
-                            SIGLA_UF.x == "BA" ~ "Nordeste",
-                            SIGLA_UF.x == "CE" ~ "Nordeste",
-                            SIGLA_UF.x == "MA" ~ "Nordeste",
-                            SIGLA_UF.x == "PE" ~ "Nordeste",
-                            SIGLA_UF.x == "PI" ~ "Nordeste",
-                            SIGLA_UF.x == "PB" ~ "Nordeste",
-                            SIGLA_UF.x == "RN" ~ "Nordeste",
-                            SIGLA_UF.x == "SE" ~ "Nordeste",
-
-                            SIGLA_UF.x == "DF" ~ "Centro-Oeste",
-                            SIGLA_UF.x == "GO" ~ "Centro-Oeste",
-                            SIGLA_UF.x == "MT" ~ "Centro-Oeste",
-                            SIGLA_UF.x == "MS" ~ "Centro-Oeste",
-
-                            SIGLA_UF.x == "ES" ~ "Sudeste",
-                            SIGLA_UF.x == "MG" ~ "Sudeste",
-                            SIGLA_UF.x == "RJ" ~ "Sudeste",
-                            SIGLA_UF.x == "SP" ~ "Sudeste",
-
-                            SIGLA_UF.x == "PR" ~ "Sul",
-                            SIGLA_UF.x == "RS" ~ "Sul",
-                            SIGLA_UF.x == "SC" ~ "Sul")
+         regiao = case_when(SIGLA_UF.x == "AC" ~ "Norte",SIGLA_UF.x == "AP" ~ "Norte",SIGLA_UF.x == "AM" ~ "Norte",SIGLA_UF.x == "PA" ~ "Norte",SIGLA_UF.x == "RO" ~ "Norte",SIGLA_UF.x == "RR" ~ "Norte",SIGLA_UF.x == "TO" ~ "Norte",SIGLA_UF.x == "AL" ~ "Nordeste",SIGLA_UF.x == "BA" ~ "Nordeste",SIGLA_UF.x == "CE" ~ "Nordeste",SIGLA_UF.x == "MA" ~ "Nordeste",SIGLA_UF.x == "PE" ~ "Nordeste",SIGLA_UF.x == "PI" ~ "Nordeste",SIGLA_UF.x == "PB" ~ "Nordeste",SIGLA_UF.x == "RN" ~ "Nordeste",SIGLA_UF.x == "SE" ~ "Nordeste",SIGLA_UF.x == "DF" ~ "Centro-Oeste",SIGLA_UF.x == "GO" ~ "Centro-Oeste",SIGLA_UF.x == "MT" ~ "Centro-Oeste",SIGLA_UF.x == "MS" ~ "Centro-Oeste",SIGLA_UF.x == "ES" ~ "Sudeste",SIGLA_UF.x == "MG" ~ "Sudeste",SIGLA_UF.x == "RJ" ~ "Sudeste",SIGLA_UF.x == "SP" ~ "Sudeste",SIGLA_UF.x == "PR" ~ "Sul",SIGLA_UF.x == "RS" ~ "Sul",SIGLA_UF.x == "SC" ~ "Sul")
          ) %>%
   
   pivot_wider(names_from = soma_indsociais, 
@@ -1399,7 +1619,6 @@ tabelas_COMP_BiodieselEtanol_SUMARIO <- as.data.frame(tabelas_COMP_BiodieselEtan
          "n_4", "pct_4",
          "n_5", "pct_5",
          "n_6", "pct_6") %>%
-
   rename(
     "Estado" = "SIGLA_UF.x",
     "Nº de mun - 1 ind." = "n_1", 
@@ -1418,12 +1637,6 @@ tabelas_COMP_BiodieselEtanol_SUMARIO <- as.data.frame(tabelas_COMP_BiodieselEtan
   arrange(regiao)
 
 options(knitr.kable.NA = '*')
-
-  
-  
-
-
-
 
 kbl(tabelas_COMP_BiodieselEtanol_SUMARIO,
     col.names = c("Região",
