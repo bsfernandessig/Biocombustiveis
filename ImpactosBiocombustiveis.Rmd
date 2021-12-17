@@ -165,7 +165,7 @@ PRODU_canapalmasoja <- read_excel("data/6957_cana+palma+soja.xlsx",
 
 
 ```{r dados_juntandoTabelas}
-SHP_Municipios <- read_sf("data/shapes/BR_Municipios_2020_simplif/BR_Municipios_2020_simplif_v3.gpkg")
+SHP_Municipios <- read_sf("data/shapes/BR_Municipios_2020_simplif/BR_Municipios_2020_simplif_v4.gpkg")
 SHP_Estados <- read_sf("data/shapes/estados_2010_simplif_WGS84.gpkg")
 usinas_biodiesel <- read_sf("data/shapes/usinas/MAPBIOMAS_usinabiodiesel.gpkg")  %>%
   select(Nome, everything()) %>%
@@ -243,7 +243,7 @@ desmatamento_prodes <- tabelas %>%
   tm_shape(SHP_Estados) +
   tm_borders(lwd = 1) +
   
-  tm_shape(usinas_cana) +
+  tm_shape(usinas_etanol) +
   tm_dots(size = 0.006, legend.show = TRUE, col = "blue", alpha = 0.5, border.col = "white") +
   
   tm_shape(usinas_biodiesel) +
@@ -267,7 +267,7 @@ co2_soja <- tabelas %>%
   tm_shape(SHP_Estados) +
   tm_borders(lwd = 1) +
   
-  tm_shape(usinas_cana) +
+  tm_shape(usinas_etanol) +
   tm_dots(size = 0.006, legend.show = TRUE, col = "blue", alpha = 0.5, border.col = "white") +
   
   tm_shape(usinas_biodiesel) +
@@ -291,7 +291,7 @@ co2_cana <- tabelas %>%
   tm_shape(SHP_Estados) +
   tm_borders(lwd = 1) +
   
-  tm_shape(usinas_cana) +
+  tm_shape(usinas_etanol) +
   tm_dots(size = 0.006, legend.show = TRUE, col = "blue", alpha = 0.5, border.col = "white") +
   
   tm_shape(usinas_biodiesel) +
@@ -316,7 +316,7 @@ co2_geral <- tabelas %>%
   tm_shape(SHP_Estados) +
   tm_borders(lwd = 1) +
   
-  tm_shape(usinas_cana) +
+  tm_shape(usinas_etanol) +
   tm_dots(size = 0.006, legend.show = TRUE, col = "blue", alpha = 0.5, border.col = "white", id = "tipodeusina") +
   
   tm_shape(usinas_biodiesel) +
@@ -1285,21 +1285,22 @@ leaflet(tabelas_COMP_BiodieselEtanol) %>%
 ```{r definindo_grupos, message=FALSE, warning=FALSE, include=FALSE}
 
 tabelas_COMP_BiodieselEtanol_GRUPOS <- tabelas_COMP_BiodieselEtanol %>% 
-  select(CD_MUN, SIGLA_UF.x,
+  select(CD_MUN, SIGLA_UF.x, `MUNICÍPIO`,
          GINI_2010_comparacao,
          PIB_2018_comparacao,
          ppespobr_2017_comparacao,
          TxDesemprego_2010_comparacao,
          
          CO2_soma2018_comparacao,
-         # CO2_soja2018_comparacao,
-         # CO2_cana2018_comparacao,
+         CO2_soja2018_comparacao,
+         CO2_cana2018_comparacao,
+         
         Ogeral_T_comparacao,
         Ogeral_AF_pct_comparacao,
-                                  # Ocana_T_comparacao,
-                                  # Ocana_AF_pct_comparacao,
-                                  # Osoja_T_comparacao,
-                                  # Osoja_AF_pct_comparacao
+        Ocana_T_comparacao,
+        Ocana_AF_pct_comparacao,
+        Osoja_T_comparacao,
+        Osoja_AF_pct_comparacao
          ) %>%
   
   mutate_if(is.numeric , replace_na, replace = 0) %>%
@@ -1309,33 +1310,24 @@ tabelas_COMP_BiodieselEtanol_GRUPOS <- tabelas_COMP_BiodieselEtanol %>%
            ppespobr_2017_comparacao+
            TxDesemprego_2010_comparacao+
            
-           CO2_soma2018_comparacao+
+           CO2_soma2018_comparacao
            # CO2_soja2018_comparacao+
-           # CO2_cana2018_comparacao
-           Ogeral_T_comparacao+
-           Ogeral_AF_pct_comparacao
-                                  # Ocana_T_comparacao+                                  # Ocana_AF_pct_comparacao+                                  # Osoja_T_comparacao+                                  # Osoja_AF_pct_comparacao
+           # CO2_cana2018_comparacao+
+           
+           # Ogeral_T_comparacao+
+           # Ogeral_AF_pct_comparacao
+           # 
+           # Ocana_T_comparacao+ 
+           # Ocana_AF_pct_comparacao+ 
+           # 
+           # Osoja_T_comparacao+  
+           # Osoja_AF_pct_comparacao
     #.keep = c("none")
     )
 
-
-tabelas_COMP_BiodieselEtanol_GRUPOS %>%
-  filter(!is.na(soma_indsociais)) %>%
-  tm_shape() +
-  tm_fill(col = "soma_indsociais", 
-          title = "", 
-          id = "soma_indsociais", palette="Spectral",
-          #n=7
-          #legend.format=list(fun=function(x) paste0(formatC(x, digits=0, big.mark = " ", format="f"))),
-          style = "cat",
-          textNA = "") +
-  tm_borders(lwd = 0.1) +
-  #tm_facets(by = "TIPOLOGIA", nrow = 1, sync = TRUE, free.coords = TRUE) +
-  tm_view(view.legend.position = c("right", "bottom")) +
-  tm_shape(SHP_Estados) +
-  tm_borders(lwd = 1)
-
 ```
+
+
 
 ```{r tabelaresumo2_estado, echo=FALSE, message=FALSE, warning=FALSE}
 ########  GINI ###########
@@ -1427,6 +1419,41 @@ x_CO2_soma2018_count <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
          pct_CO2_soma2018_count = scales::percent(round(pct_CO2_soma2018_count, 2), big.mark = ".",  decimal.mark = "," , na.rm = TRUE)
          )
 
+######## CO2 SOJA  ###########
+x_CO2_soja2018_count <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
+  select(SIGLA_UF.x, 
+         CO2_soja2018_comparacao
+         ) %>%
+  
+  group_by(SIGLA_UF.x, 
+           CO2_soja2018_comparacao
+           ) %>%
+  
+  summarise(CO2_soja2018_count = n()
+            ) %>%
+    
+  mutate(pct_CO2_soja2018_count = CO2_soja2018_count/sum(CO2_soja2018_count),
+         pct_CO2_soja2018_count = scales::percent(round(pct_CO2_soja2018_count, 2), big.mark = ".",  decimal.mark = "," , na.rm = TRUE)
+         )
+
+
+######## CO2 CANA  ###########
+x_CO2_cana2018_count <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
+  select(SIGLA_UF.x, 
+         CO2_cana2018_comparacao
+         ) %>%
+  
+  group_by(SIGLA_UF.x, 
+           CO2_cana2018_comparacao
+           ) %>%
+  
+  summarise(CO2_cana2018_count = n()
+            ) %>%
+    
+  mutate(pct_CO2_cana2018_count = CO2_cana2018_count/sum(CO2_cana2018_count),
+         pct_CO2_cana2018_count = scales::percent(round(pct_CO2_cana2018_count, 2), big.mark = ".",  decimal.mark = "," , na.rm = TRUE)
+         )
+
 ######## OCUPADOS GERAL  ###########
 x_Ogeral_T_count <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
   select(SIGLA_UF.x, 
@@ -1462,6 +1489,79 @@ x_Ogeral_AF_pct_count <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
          pct_Ogeral_AF_pct_count = scales::percent(round(pct_Ogeral_AF_pct_count, 2), big.mark = ".",  decimal.mark = "," , na.rm = TRUE)
          )
 
+
+######## OCUPADOS soja  ###########
+x_Osoja_T_count <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
+  select(SIGLA_UF.x, 
+         Osoja_T_comparacao
+         ) %>%
+  
+  group_by(SIGLA_UF.x, 
+           Osoja_T_comparacao
+           ) %>%
+  
+  summarise(Osoja_T_count = n()
+            ) %>%
+    
+  mutate(pct_Osoja_T_count = Osoja_T_count/sum(Osoja_T_count),
+         pct_Osoja_T_count = scales::percent(round(pct_Osoja_T_count, 2), big.mark = ".",  decimal.mark = "," , na.rm = TRUE)
+         )
+
+######## OCUPADOS AF PCT  ###########
+
+x_Osoja_AF_pct_count <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
+  select(SIGLA_UF.x, 
+         Osoja_AF_pct_comparacao
+         ) %>%
+  
+  group_by(SIGLA_UF.x, 
+           Osoja_AF_pct_comparacao
+           ) %>%
+  
+  summarise(Osoja_AF_pct_count = n()
+            ) %>%
+    
+  mutate(pct_Osoja_AF_pct_count = Osoja_AF_pct_count/sum(Osoja_AF_pct_count),
+         pct_Osoja_AF_pct_count = scales::percent(round(pct_Osoja_AF_pct_count, 2), big.mark = ".",  decimal.mark = "," , na.rm = TRUE)
+         )
+
+
+######## OCUPADOS cana  ###########
+x_Ocana_T_count <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
+  select(SIGLA_UF.x, 
+         Ocana_T_comparacao
+         ) %>%
+  
+  group_by(SIGLA_UF.x, 
+           Ocana_T_comparacao
+           ) %>%
+  
+  summarise(Ocana_T_count = n()
+            ) %>%
+    
+  mutate(pct_Ocana_T_count = Ocana_T_count/sum(Ocana_T_count),
+         pct_Ocana_T_count = scales::percent(round(pct_Ocana_T_count, 2), big.mark = ".",  decimal.mark = "," , na.rm = TRUE)
+         )
+
+######## OCUPADOS AF PCT  ###########
+
+x_Ocana_AF_pct_count <- as.data.frame(tabelas_COMP_BiodieselEtanol_GRUPOS) %>%
+  select(SIGLA_UF.x, 
+         Ocana_AF_pct_comparacao
+         ) %>%
+  
+  group_by(SIGLA_UF.x, 
+           Ocana_AF_pct_comparacao
+           ) %>%
+  
+  summarise(Ocana_AF_pct_count = n()
+            ) %>%
+    
+  mutate(pct_Ocana_AF_pct_count = Ocana_AF_pct_count/sum(Ocana_AF_pct_count),
+         pct_Ocana_AF_pct_count = scales::percent(round(pct_Ocana_AF_pct_count, 2), big.mark = ".",  decimal.mark = "," , na.rm = TRUE)
+         )
+
+
 ########   ###########
 
 estados_siglas <- read_excel("data/tabelas/criadas/estados_siglas.xlsx")
@@ -1470,23 +1570,51 @@ tabelas_countsSUMARIO <- estados_siglas %>%
   left_join(., x_GINI_2010_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "GINI_2010_comparacao")) %>%
   left_join(., x_ppespobr_2017_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "ppespobr_2017_comparacao")) %>%
   left_join(., x_TxDesemprego_2010_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "TxDesemprego_2010_comparacao")) %>%
+ 
   left_join(., x_CO2_soma2018_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "CO2_soma2018_comparacao")) %>%
+  left_join(., x_CO2_soja2018_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "CO2_soja2018_comparacao")) %>%
+  left_join(., x_CO2_cana2018_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "CO2_cana2018_comparacao")) %>%
+  
   left_join(., x_Ogeral_T_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "Ogeral_T_comparacao")) %>%
   left_join(., x_Ogeral_AF_pct_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "Ogeral_AF_pct_comparacao")) %>%
+  
+  left_join(., x_Osoja_T_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "Osoja_T_comparacao")) %>%
+  left_join(., x_Osoja_AF_pct_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "Osoja_AF_pct_comparacao")) %>%
+  
+  left_join(., x_Ocana_T_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "Ocana_T_comparacao")) %>%
+  left_join(., x_Ocana_AF_pct_count, by = c("SIGLA_UF" = "SIGLA_UF.x", "melhorpior" = "Ocana_AF_pct_comparacao")) %>%
   
   pivot_wider(names_from = melhorpior, 
               values_from = c("GINI_2010_count", 
                               "pct_GINI_2010_count" ,
+                              
                               "ppespobr_2017_count" ,
                               "pct_ppespobr_2017_count" ,
+                              
                               "TxDesemprego_2010_count",
                               "pct_TxDesemprego_2010_count",
+                              
                               "CO2_soma2018_count" ,
                               "pct_CO2_soma2018_count" ,
+                              "CO2_soja2018_count" ,
+                              "pct_CO2_soja2018_count" ,
+                              "CO2_cana2018_count" ,
+                              "pct_CO2_cana2018_count" ,
+                              
                               "Ogeral_T_count" ,
                               "pct_Ogeral_T_count" ,
                               "Ogeral_AF_pct_count",
-                              "pct_Ogeral_AF_pct_count")) %>%
+                              "pct_Ogeral_AF_pct_count",
+                              
+                              "Osoja_T_count" ,
+                              "pct_Osoja_T_count" ,
+                              "Osoja_AF_pct_count",
+                              "pct_Osoja_AF_pct_count",
+                              
+                              "Ocana_T_count" ,
+                              "pct_Ocana_T_count" ,
+                              "Ocana_AF_pct_count",
+                              "pct_Ocana_AF_pct_count")) %>%
   arrange(regiao, SIGLA_UF) %>%
   select("regiao",                        
           "SIGLA_UF",    
@@ -1514,7 +1642,22 @@ tabelas_countsSUMARIO <- estados_siglas %>%
           
           "CO2_soma2018_count_0",      
           "pct_CO2_soma2018_count_0",  
+         
+          "CO2_soja2018_count_1",         
+          "pct_CO2_soja2018_count_1"    ,
           
+          "CO2_soja2018_count_0",      
+          "pct_CO2_soja2018_count_0", 
+         
+          "CO2_cana2018_count_1",         
+          "pct_CO2_cana2018_count_1"    ,
+          
+          "CO2_cana2018_count_0",      
+          "pct_CO2_cana2018_count_0", 
+          
+         
+         
+         
           "Ogeral_T_count_1",             
           "pct_Ogeral_T_count_1",      
           
@@ -1525,26 +1668,72 @@ tabelas_countsSUMARIO <- estados_siglas %>%
           "pct_Ogeral_AF_pct_count_1",    
           
           "Ogeral_AF_pct_count_0",        
-          "pct_Ogeral_AF_pct_count_0"
+          "pct_Ogeral_AF_pct_count_0",
+         
+         
+          "Osoja_T_count_1",             
+          "pct_Osoja_T_count_1",      
+          
+          "Osoja_T_count_0",             
+          "pct_Osoja_T_count_0",         
+          
+          "Osoja_AF_pct_count_1",        
+          "pct_Osoja_AF_pct_count_1",    
+          
+          "Osoja_AF_pct_count_0",        
+          "pct_Osoja_AF_pct_count_0",
+         
+         
+          "Ocana_T_count_1",             
+          "pct_Ocana_T_count_1",      
+          
+          "Ocana_T_count_0",             
+          "pct_Ocana_T_count_0",         
+          
+          "Ocana_AF_pct_count_1",        
+          "pct_Ocana_AF_pct_count_1",    
+          
+          "Ocana_AF_pct_count_0",        
+          "pct_Ocana_AF_pct_count_0"
          ) %>%
   group_by(regiao, SIGLA_UF) %>%
-  mutate(GINI_2010_count_1 = paste0(pct_GINI_2010_count_1, " (", GINI_2010_count_1, ")"), 
-         GINI_2010_count_0 = paste0(pct_GINI_2010_count_0, " (", GINI_2010_count_0, ")"),
+  mutate(GINI_2010_count_1 = paste0(pct_GINI_2010_count_1, "(", GINI_2010_count_1, ")"), 
+         GINI_2010_count_0 = paste0(pct_GINI_2010_count_0, "(", GINI_2010_count_0, ")"),
          
-         ppespobr_2017_count_1 = paste0(pct_ppespobr_2017_count_1, " (", ppespobr_2017_count_1, ")"), 
-         ppespobr_2017_count_0 = paste0(pct_ppespobr_2017_count_0, " (", ppespobr_2017_count_0, ")"),
+         ppespobr_2017_count_1 = paste0(pct_ppespobr_2017_count_1, "(", ppespobr_2017_count_1, ")"), 
+         ppespobr_2017_count_0 = paste0(pct_ppespobr_2017_count_0, "(", ppespobr_2017_count_0, ")"),
          
-         TxDesemprego_2010_count_1 = paste0(pct_TxDesemprego_2010_count_1, " (", TxDesemprego_2010_count_1, ")"), 
-         TxDesemprego_2010_count_0 = paste0(pct_TxDesemprego_2010_count_0, " (", TxDesemprego_2010_count_0, ")"),
+         TxDesemprego_2010_count_1 = paste0(pct_TxDesemprego_2010_count_1, "(", TxDesemprego_2010_count_1, ")"), 
+         TxDesemprego_2010_count_0 = paste0(pct_TxDesemprego_2010_count_0, "(", TxDesemprego_2010_count_0, ")"),
          
-         CO2_soma2018_count_1 = paste0(pct_CO2_soma2018_count_1, " (", CO2_soma2018_count_1, ")"), 
-         CO2_soma2018_count_0 = paste0(pct_CO2_soma2018_count_0, " (", CO2_soma2018_count_0, ")"),
+         CO2_soma2018_count_1 = paste0(pct_CO2_soma2018_count_1, "(", CO2_soma2018_count_1, ")"), 
+         CO2_soma2018_count_0 = paste0(pct_CO2_soma2018_count_0, "(", CO2_soma2018_count_0, ")"),
          
-         Ogeral_T_count_1 = paste0(pct_Ogeral_T_count_1, " (", Ogeral_T_count_1, ")"), 
-         Ogeral_T_count_0 = paste0(pct_Ogeral_T_count_0, " (", Ogeral_T_count_0, ")"),
+         CO2_soja2018_count_1 = paste0(pct_CO2_soja2018_count_1, "(", CO2_soja2018_count_1, ")"), 
+         CO2_soja2018_count_0 = paste0(pct_CO2_soja2018_count_0, "(", CO2_soja2018_count_0, ")"),
          
-         Ogeral_AF_pct_count_1 = paste0(pct_Ogeral_AF_pct_count_1, " (", Ogeral_AF_pct_count_1, ")"), 
-         Ogeral_AF_pct_count_0 = paste0(pct_Ogeral_AF_pct_count_0, " (", Ogeral_AF_pct_count_0, ")"),
+         CO2_cana2018_count_1 = paste0(pct_CO2_cana2018_count_1, "(", CO2_cana2018_count_1, ")"), 
+         CO2_cana2018_count_0 = paste0(pct_CO2_cana2018_count_0, "(", CO2_cana2018_count_0, ")"),
+         
+         Ogeral_T_count_1 = paste0(pct_Ogeral_T_count_1, "(", Ogeral_T_count_1, ")"), 
+         Ogeral_T_count_0 = paste0(pct_Ogeral_T_count_0, "(", Ogeral_T_count_0, ")"),
+         
+         Ogeral_AF_pct_count_1 = paste0(pct_Ogeral_AF_pct_count_1, "(", Ogeral_AF_pct_count_1, ")"), 
+         Ogeral_AF_pct_count_0 = paste0(pct_Ogeral_AF_pct_count_0, "(", Ogeral_AF_pct_count_0, ")"),
+         
+         
+                  Osoja_T_count_1 = paste0(pct_Osoja_T_count_1, "(", Osoja_T_count_1, ")"), 
+         Osoja_T_count_0 = paste0(pct_Osoja_T_count_0, "(", Osoja_T_count_0, ")"),
+         
+         Osoja_AF_pct_count_1 = paste0(pct_Osoja_AF_pct_count_1, "(", Osoja_AF_pct_count_1, ")"), 
+         Osoja_AF_pct_count_0 = paste0(pct_Osoja_AF_pct_count_0, "(", Osoja_AF_pct_count_0, ")"),
+         
+         
+                  Ocana_T_count_1 = paste0(pct_Ocana_T_count_1, "(", Ocana_T_count_1, ")"), 
+         Ocana_T_count_0 = paste0(pct_Ocana_T_count_0, "(", Ocana_T_count_0, ")"),
+         
+         Ocana_AF_pct_count_1 = paste0(pct_Ocana_AF_pct_count_1, "(", Ocana_AF_pct_count_1, ")"), 
+         Ocana_AF_pct_count_0 = paste0(pct_Ocana_AF_pct_count_0, "(", Ocana_AF_pct_count_0, ")"),
          
          .keep = c("none")
          ) %>%
@@ -1568,30 +1757,69 @@ kbl(tabelas_countsSUMARIO,
                   "Acima da média",
                   "Abaixo da média",
                   "Acima da média",
+                  "Abaixo da média",
+                  
+                  "Acima da média",
+                  "Abaixo da média",
+                  "Acima da média",
+                  "Abaixo da média",
+                  "Acima da média",
+                  "Abaixo da média",
+                  "Acima da média",
+                  "Abaixo da média",
+                  "Acima da média",
+                  "Abaixo da média",
+                  "Acima da média",
                   "Abaixo da média"
+
+                                    
                   ),
-    align = "ccrlrlrlrlrlrlrlrlrl",
+    align = "ccrlrlrlrlrlrlrlrlrlrlrlrlrl",
     caption = "Resumo por estado (comparativo dos valores municipais com a média estadual)") %>%
   #kable_classic() %>%
 #  kable_minimal() %>%
   #kable_material(c("striped", "hover")) 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), font_size = 12, full_width = F) %>%
   add_header_above(c(" " = 2, 
                      "Índice de Gini" = 2, 
                      "% de pessoas pobres" = 2, 
                      "Taxa de desemprego" = 2, 
                      "Emissões líquidas de CO2" = 2, 
+                     "Emissões líquidas de CO2 (soja)" = 2,
+                     "Emissões líquidas de CO2 (cana)" = 2,
+                     
+                     "Ocupados nos estab. agropec." = 2, 
+                     "Ocupados da AF em estab.agropec." = 2,
+                    
                      "Ocupados na soja" = 2, 
-                     "% de ocupados na soja da AF" = 2)) %>%
-  #add_header_above(c(" " = 2, "% de soja na AMC acima da média" = 6, "% de soja na AMC abaixo da média" = 6)) %>%
-  collapse_rows(columns = 1, valign = "middle") 
+                     "% de ocupados na soja da AF" = 2,
+                     
+                     "Ocupados na cana" = 2, 
+                     "% de ocupados na cana da AF" = 2)) %>%
+  column_spec(column = c(3:26), width = "1cm") %>%
+  collapse_rows(columns = 1, valign = "top") %>%
+
+  scroll_box(width = "100%", height = "500px")
+
+
+
+
 
 ```
 
 
 # Tipologia a partir do acumulo de indicadores
 
-Para a delimitação inicial de uma tipologia, um valor de 0 a 7 foi atribuído a cada município com usinas de etanol e/ou biodiesel, sendo esse valor relativo ao acumulo de indicadores melhores do que a média do estado. Um valor de 0 significa que nenhum indicador naquele município é melhor que a média estadual, enquanto que um valor de 7 indica que todos os indicadores são melhores que a média estadual.
+Para a delimitação inicial de uma tipologia, um valor de 0 a 5 foi atribuído a cada município com usinas de etanol e/ou biodiesel, sendo esse valor relativo ao acumulo de indicadores melhores do que a média do estado. Um valor de 0 significa que nenhum indicador naquele município é melhor que a média estadual, enquanto que um valor de 5 indica que todos os indicadores são melhores que a média estadual.
+
+*Indicadores considerados*
+
+- Índice de Gini (2010)
+- PIB (2018)
+- Taxa de desemprego (2010)
+- % de pessoas pobres (2017)
+- Emissões líquidas totais de CO2 (2018)
+
 
 
 ## Tabela resumo por estado
@@ -1617,8 +1845,7 @@ tabelas_COMP_BiodieselEtanol_SUMARIO <- as.data.frame(tabelas_COMP_BiodieselEtan
          "n_2", "pct_2",
          "n_3", "pct_3",
          "n_4", "pct_4",
-         "n_5", "pct_5",
-         "n_6", "pct_6") %>%
+         "n_5", "pct_5") %>%
   rename(
     "Estado" = "SIGLA_UF.x",
     "Nº de mun - 1 ind." = "n_1", 
@@ -1630,9 +1857,7 @@ tabelas_COMP_BiodieselEtanol_SUMARIO <- as.data.frame(tabelas_COMP_BiodieselEtan
     "Nº de mun - 4 ind." = "n_4", 
     "% estado - 4 ind." = "pct_4",
     "Nº de mun - 5 ind."= "n_5", 
-    "% estado - 5 ind." = "pct_5",
-    "Nº de mun - 6 ind."= "n_6", 
-    "% estado - 6 ind." = "pct_6"
+    "% estado - 5 ind." = "pct_5"
   ) %>%
   arrange(regiao)
 
@@ -1650,10 +1875,8 @@ kbl(tabelas_COMP_BiodieselEtanol_SUMARIO,
                   "Nº de mun", 
                   "% estado", 
                   "Nº de mun",
-                  "% estado", 
-                  "Nº de mun", 
                   "% estado"),
-    align = "ccrlrlrlrlrlrlrlrlrl",
+    align = "ccrlrlrlrlrlrlrl",
     caption = "Resumo por estado") %>%
   #kable_classic() %>%
 #  kable_minimal() %>%
@@ -1664,16 +1887,39 @@ kbl(tabelas_COMP_BiodieselEtanol_SUMARIO,
                      "2 indicadores melhores que a média do estado" = 2, 
                      "3 indicadores melhores que a média do estado" = 2,
                      "4 indicadores melhores que a média do estado" = 2,
-                     "5 indicadores melhores que a média do estado" = 2,
-                     "6 indicadores melhores que a média do estado" = 2)) %>%
+                     "5 indicadores melhores que a média do estado" = 2)) %>%
   #add_header_above(c(" " = 2, "% de soja na AMC acima da média" = 6, "% de soja na AMC abaixo da média" = 6)) %>%
   collapse_rows(columns = 1, valign = "middle") 
 
 ```
 
+### Mapa do acumulo de indicadores 
 
 
+```{r mapaacumuloindicadores, echo=FALSE, message=FALSE, warning=FALSE}
 
+parajoin <- tabelas %>%
+  select(CD_MUN, NM_MUN)
+
+
+tabelas_COMP_BiodieselEtanol_GRUPOS %>%
+
+  filter(!is.na(soma_indsociais)) %>%
+  tm_shape() +
+  tm_fill(col = "soma_indsociais",
+          title = "",
+          id = "MUNICÍPIO", palette="Spectral",
+          #n=7
+          #legend.format=list(fun=function(x) paste0(formatC(x, digits=0, big.mark = " ", format="f"))),
+          style = "cat",
+          textNA = "") +
+  tm_borders(lwd = 0.1) +
+  #tm_facets(by = "TIPOLOGIA", nrow = 1, sync = TRUE, free.coords = TRUE) +
+  tm_view(view.legend.position = c("right", "bottom")) +
+  tm_shape(SHP_Estados) +
+  tm_borders(lwd = 1)
+
+```
 
 
 
